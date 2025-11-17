@@ -28,7 +28,7 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-    command: sh /app/scripts/migrate-and-seed.sh
+    command: bash /app/scripts/migrate-and-seed.sh
     restart: "no"
 
   app:
