@@ -10,7 +10,15 @@ if [ -z "$DATABASE_URL" ]; then
   exit 1
 fi
 
-echo "DATABASE_URL is set (showing first 30 chars): ${DATABASE_URL:0:30}..."
+# Fix DATABASE_URL if it uses localhost - replace with service name 'db'
+# Coolify sets localhost, but in Docker Compose we need the service name
+if [[ "$DATABASE_URL" == *"@localhost"* ]] || [[ "$DATABASE_URL" == *"@127.0.0.1"* ]]; then
+  echo "WARNING: DATABASE_URL contains localhost, replacing with service name 'db'"
+  DATABASE_URL=$(echo "$DATABASE_URL" | sed 's/@localhost/@db/g' | sed 's/@127.0.0.1/@db/g')
+  export DATABASE_URL
+fi
+
+echo "DATABASE_URL is set (showing first 50 chars): ${DATABASE_URL:0:50}..."
 
 echo "Running database migrations..."
 if bun run db:migrate 2>&1; then
