@@ -1,0 +1,1 @@
+ALTER TABLE "questions" ADD CONSTRAINT "questions_question_unique" UNIQUE("question");

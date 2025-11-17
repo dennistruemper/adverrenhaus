@@ -1,0 +1,20 @@
+FROM oven/bun:1
+
+WORKDIR /app
+
+# Install dependencies
+COPY package.json bun.lock* bun.lockb* ./
+RUN bun install --frozen-lockfile
+
+# Copy project files
+COPY . .
+
+# Make scripts executable
+RUN chmod +x scripts/*.sh 2>/dev/null || true
+
+# Ensure bun is available in PATH
+ENV PATH="/usr/local/bin:$PATH"
+
+# Default command (can be overridden in compose.yaml)
+CMD ["bash", "/app/scripts/migrate-and-seed.sh"]
+
