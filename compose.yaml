@@ -25,11 +25,6 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-root}:${POSTGRES_PASSWORD:-mysecretpassword}@db:5432/${POSTGRES_DB:-local}
-      POSTGRES_USER: ${POSTGRES_USER:-root}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mysecretpassword}
-      POSTGRES_DB: ${POSTGRES_DB:-local}
-    # No volume mount needed - all files are already in the Docker image
-    # This ensures it works in both local and Coolify environments
     command: bash /app/scripts/migrate-and-seed.sh
     restart: "no"
 
