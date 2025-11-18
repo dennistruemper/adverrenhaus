@@ -13,6 +13,10 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      internal:
+        aliases:
+          - db
 
   migrate:
     build:
@@ -25,6 +29,8 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-root}:${POSTGRES_PASSWORD:-mysecretpassword}@db:5432/${POSTGRES_DB:-local}
     command: bash /app/scripts/migrate-and-seed.sh
     restart: "no"
+    networks:
+      internal:
 
   app:
     build:
@@ -43,6 +49,11 @@ services:
       HOST: 0.0.0.0
       ORIGIN: http://localhost:3000
     restart: unless-stopped
+    networks:
+      internal:
 
 volumes:
   pgdata:
+
+networks:
+  internal:
