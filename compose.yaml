@@ -35,8 +35,8 @@ services:
         condition: service_completed_successfully
       db:
         condition: service_healthy
-    ports:
-      - "3000:3000"
+    # No port mapping needed - Coolify's reverse proxy routes traffic by hostname
+    # The container still listens on port 3000 internally (EXPOSE 3000 in Dockerfile)
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-root}:${POSTGRES_PASSWORD:-mysecretpassword}@db:5432/${POSTGRES_DB:-local}
       PORT: 3000
