@@ -29,6 +29,13 @@
       "when": 1763413633888,
       "tag": "0003_magical_thunderbird",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1763457210269,
+      "tag": "0004_far_iceman",
+      "breakpoints": true
     }
   ]
 }
