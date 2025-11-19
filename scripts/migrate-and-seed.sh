@@ -10,7 +10,7 @@ fi
 
 # Convert sslmode parameter to ssl parameter for the postgres library if needed
 # The postgres library (used by drizzle-kit) uses ssl=true/ssl=1, not sslmode
-# If sslmode=disable or sslmode is not present, remove it (no SSL needed)
+# If sslmode=disable or sslmode is not present, explicitly set ssl=false
 if [[ "$DATABASE_URL" == *"sslmode="* ]]; then
   # If sslmode=require or sslmode=prefer, convert to ssl=true (postgres library format)
   if [[ "$DATABASE_URL" == *"sslmode=require"* ]] || [[ "$DATABASE_URL" == *"sslmode=prefer"* ]]; then
@@ -18,9 +18,25 @@ if [[ "$DATABASE_URL" == *"sslmode="* ]]; then
     export DATABASE_URL=$(echo "$DATABASE_URL" | sed 's/sslmode=prefer/ssl=true/g')
     echo "Converted sslmode parameter to ssl parameter for postgres library"
   else
-    # Remove sslmode parameter for non-SSL connections (sslmode=disable, etc.)
+    # Remove sslmode parameter and explicitly set ssl=false for non-SSL connections
     export DATABASE_URL=$(echo "$DATABASE_URL" | sed 's/[;&]sslmode=[^;&]*//g')
-    echo "Removed sslmode parameter (SSL disabled)"
+    if [[ "$DATABASE_URL" == *"?"* ]]; then
+      export DATABASE_URL="${DATABASE_URL}&ssl=false"
+    else
+      export DATABASE_URL="${DATABASE_URL}?ssl=false"
+    fi
+    echo "Removed sslmode parameter and set ssl=false (SSL disabled)"
+  fi
+else
+  # If no sslmode parameter and no ssl parameter, explicitly disable SSL
+  # This ensures the postgres library doesn't try to use SSL by default
+  if [[ "$DATABASE_URL" != *"ssl="* ]]; then
+    if [[ "$DATABASE_URL" == *"?"* ]]; then
+      export DATABASE_URL="${DATABASE_URL}&ssl=false"
+    else
+      export DATABASE_URL="${DATABASE_URL}?ssl=false"
+    fi
+    echo "Explicitly set ssl=false to disable SSL"
   fi
 fi
 
