@@ -18,28 +18,28 @@ if [[ "$DATABASE_URL" == *"sslmode="* ]]; then
     export DATABASE_URL=$(echo "$DATABASE_URL" | sed 's/sslmode=prefer/ssl=true/g')
     echo "Converted sslmode parameter to ssl parameter for postgres library"
   else
-    # Remove sslmode parameter and explicitly set ssl=false for non-SSL connections
+    # Remove sslmode parameter entirely for non-SSL connections
     export DATABASE_URL=$(echo "$DATABASE_URL" | sed 's/[;&]sslmode=[^;&]*//g')
-    if [[ "$DATABASE_URL" == *"?"* ]]; then
-      export DATABASE_URL="${DATABASE_URL}&ssl=false"
-    else
-      export DATABASE_URL="${DATABASE_URL}?ssl=false"
-    fi
-    echo "Removed sslmode parameter and set ssl=false (SSL disabled)"
-  fi
-else
-  # If no sslmode parameter and no ssl parameter, explicitly disable SSL
-  # This ensures the postgres library doesn't try to use SSL by default
-  if [[ "$DATABASE_URL" != *"ssl="* ]]; then
-    if [[ "$DATABASE_URL" == *"?"* ]]; then
-      export DATABASE_URL="${DATABASE_URL}&ssl=false"
-    else
-      export DATABASE_URL="${DATABASE_URL}?ssl=false"
-    fi
-    echo "Explicitly set ssl=false to disable SSL"
+    echo "Removed sslmode parameter (SSL disabled)"
   fi
 fi
 
+# Remove any existing ssl parameters if SSL is disabled
+# The postgres library may try to use SSL if ssl parameter is present, even if set to false
+# So we remove all ssl-related parameters entirely for non-SSL connections
+if [[ "$DATABASE_URL" == *"ssl=false"* ]] || [[ "$DATABASE_URL" == *"ssl=0"* ]]; then
+  export DATABASE_URL=$(echo "$DATABASE_URL" | sed 's/[;&]ssl=false//g')
+  export DATABASE_URL=$(echo "$DATABASE_URL" | sed 's/[;&]ssl=0//g')
+  export DATABASE_URL=$(echo "$DATABASE_URL" | sed 's/?ssl=false//g')
+  export DATABASE_URL=$(echo "$DATABASE_URL" | sed 's/?ssl=0//g')
+  echo "Removed ssl=false parameter (postgres library will use plain connection)"
+fi
+
+# Ensure no SSL parameters are present for non-SSL connections
+# Clean up any trailing ? or & after removing parameters
+export DATABASE_URL=$(echo "$DATABASE_URL" | sed 's/?$//' | sed 's/&$//')
+
+echo "DATABASE_URL (after SSL configuration): ${DATABASE_URL}"
 echo "Running database migrations..."
 echo "Migration files available:"
 ls -la drizzle/*.sql 2>/dev/null || echo "No migration files found in drizzle/"
