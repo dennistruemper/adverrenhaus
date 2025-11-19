@@ -29,10 +29,16 @@ RUN bun install --frozen-lockfile
 # Copy built application
 COPY --from=builder /app/build ./build
 
-# Copy migration files (needed if running migrations in container)
+# Copy migration files and scripts (for runtime migrations if needed)
 COPY drizzle ./drizzle
 COPY drizzle.config.ts ./
 COPY scripts ./scripts
+# Copy seed file for database seeding
+COPY src/lib/server/db/seed.ts ./src/lib/server/db/seed.ts
+COPY src/lib/server/db/schema.ts ./src/lib/server/db/schema.ts
+
+# Make scripts executable
+RUN chmod +x scripts/*.sh
 
 # Expose port
 EXPOSE 3000
@@ -41,6 +47,9 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOST=0.0.0.0
 ENV NODE_ENV=production
+
+# Use entrypoint to run migrations at runtime before starting the app
+ENTRYPOINT ["/app/scripts/docker-entrypoint.sh"]
 
 # Start the server
 CMD ["bun", "run", "./build/index.js"]
