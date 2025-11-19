@@ -8,5 +8,6 @@ export const test = pgTable('test', {
 export const questions = pgTable('questions', {
 	id: serial('id').primaryKey(),
 	question: text('question').notNull().unique(),
-	answer: text('answer').notNull()
+	answer: text('answer').notNull(),
+	reward: text('reward').notNull().default('Good job!')
 });

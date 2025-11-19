@@ -1,0 +1,1 @@
+ALTER TABLE "questions" ADD COLUMN "reward" text DEFAULT 'Good job!' NOT NULL;

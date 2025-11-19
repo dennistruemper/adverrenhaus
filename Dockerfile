@@ -2,10 +2,10 @@ FROM oven/bun:1 AS builder
 
 WORKDIR /app
 
-# Copy package files (prefer bun.lock over bun.lockb)
+# Copy package files
 COPY package.json bun.lock* bun.lockb* ./
 
-# Install dependencies
+# Install all dependencies (needed for build)
 RUN bun install --frozen-lockfile
 
 # Copy project files
@@ -19,14 +19,20 @@ FROM oven/bun:1
 
 WORKDIR /app
 
-# Copy package files (prefer bun.lock over bun.lockb)
+# Copy package files
 COPY package.json bun.lock* bun.lockb* ./
 
-# Install production dependencies only
-RUN bun install --frozen-lockfile --production
+# Install all dependencies (including drizzle-kit for migrations if needed)
+# In production, you might want --production, but keep dev deps if you run migrations
+RUN bun install --frozen-lockfile
 
 # Copy built application
 COPY --from=builder /app/build ./build
+
+# Copy migration files (needed if running migrations in container)
+COPY drizzle ./drizzle
+COPY drizzle.config.ts ./
+COPY scripts ./scripts
 
 # Expose port
 EXPOSE 3000

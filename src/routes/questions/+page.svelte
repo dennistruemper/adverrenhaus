@@ -6,21 +6,27 @@
 </script>
 
 <div class="container mx-auto px-4 py-8">
-	<h1 class="text-4xl font-bold mb-8 text-gray-900">Animal Questions</h1>
+	<h1 class="mb-8 text-4xl font-bold text-gray-900">Animal Questions</h1>
 
 	{#if questions.length === 0}
-		<div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+		<div class="rounded-lg border border-yellow-200 bg-yellow-50 p-6 text-center">
 			<p class="text-yellow-800">No questions found. Run the seed script to add questions.</p>
 		</div>
 	{:else}
 		<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 			{#each questions as question}
-				<div class="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow">
+				<div
+					class="rounded-lg border border-gray-200 bg-white p-6 shadow-md transition-shadow hover:shadow-lg"
+				>
 					<div class="mb-4">
-						<h2 class="text-xl font-semibold text-gray-800 mb-2">{question.question}</h2>
-						<div class="flex items-center gap-2">
+						<h2 class="mb-2 text-xl font-semibold text-gray-800">{question.question}</h2>
+						<div class="mb-2 flex items-center gap-2">
 							<span class="text-sm text-gray-500">Answer:</span>
 							<span class="text-lg font-medium text-blue-600">{question.answer}</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<span class="text-sm text-gray-500">Reward:</span>
+							<span class="text-lg font-medium text-green-600">{question.reward}</span>
 						</div>
 					</div>
 					<div class="text-xs text-gray-400">ID: {question.id}</div>

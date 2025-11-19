@@ -15,35 +15,44 @@ async function seed() {
 	await db
 		.insert(questions)
 		.values([
-			{ question: 'What is the largest land animal?', answer: 'Elephant' },
-			{ question: 'What is the fastest land animal?', answer: 'Cheetah' },
-			{ question: 'What is the tallest animal?', answer: 'Giraffe' },
-			{ question: 'What animal is known as the king of the jungle?', answer: 'Lion' },
-			{ question: 'What is a baby cat called?', answer: 'Kitten' },
-			{ question: 'What is a baby dog called?', answer: 'Puppy' },
-			{ question: 'What is a group of lions called?', answer: 'Pride' },
-			{ question: 'What is a group of wolves called?', answer: 'Pack' },
-			{ question: 'What is a group of fish called?', answer: 'School' },
-			{ question: 'What is the largest mammal?', answer: 'Whale' },
-			{ question: 'What animal has the longest neck?', answer: 'Giraffe' },
-			{ question: 'What is a baby horse called?', answer: 'Foal' },
-			{ question: 'What is a baby cow called?', answer: 'Calf' },
-			{ question: 'What is a baby sheep called?', answer: 'Lamb' },
-			{ question: 'What is a baby pig called?', answer: 'Piglet' },
-			{ question: 'What is a baby duck called?', answer: 'Duckling' },
-			{ question: 'What is a baby bear called?', answer: 'Cub' },
-			{ question: 'What is a baby kangaroo called?', answer: 'Joey' },
-			{ question: 'What is a baby elephant called?', answer: 'Calf' },
-			{ question: 'What is a baby tiger called?', answer: 'Cub' },
-			{ question: 'What is a baby rabbit called?', answer: 'Bunny' },
-			{ question: 'What is a baby owl called?', answer: 'Owlet' },
-			{ question: 'What is a baby eagle called?', answer: 'Eaglet' },
-			{ question: 'What is a baby swan called?', answer: 'Cygnet' }
+			{
+				question: 'What is the largest land animal?',
+				answer: 'Elephant',
+				reward: 'Excellent work!'
+			},
+			{ question: 'What is the fastest land animal?', answer: 'Cheetah', reward: 'Well done!' },
+			{ question: 'What is the tallest animal?', answer: 'Giraffe', reward: 'Great job!' },
+			{
+				question: 'What animal is known as the king of the jungle?',
+				answer: 'Lion',
+				reward: 'Fantastic!'
+			},
+			{ question: 'What is a baby cat called?', answer: 'Kitten', reward: 'Awesome!' },
+			{ question: 'What is a baby dog called?', answer: 'Puppy', reward: 'Brilliant!' },
+			{ question: 'What is a group of lions called?', answer: 'Pride', reward: 'Perfect!' },
+			{ question: 'What is a group of wolves called?', answer: 'Pack', reward: 'Outstanding!' },
+			{ question: 'What is a group of fish called?', answer: 'School', reward: 'Superb!' },
+			{ question: 'What is the largest mammal?', answer: 'Whale', reward: 'Amazing!' },
+			{ question: 'What animal has the longest neck?', answer: 'Giraffe', reward: 'Wonderful!' },
+			{ question: 'What is a baby horse called?', answer: 'Foal', reward: 'Terrific!' },
+			{ question: 'What is a baby cow called?', answer: 'Calf', reward: 'Impressive!' },
+			{ question: 'What is a baby sheep called?', answer: 'Lamb', reward: 'You got it!' },
+			{ question: 'What is a baby pig called?', answer: 'Piglet', reward: 'Nice one!' },
+			{ question: 'What is a baby duck called?', answer: 'Duckling', reward: 'Keep it up!' },
+			{ question: 'What is a baby bear called?', answer: 'Cub', reward: 'You rock!' },
+			{ question: 'What is a baby kangaroo called?', answer: 'Joey', reward: 'Way to go!' },
+			{ question: 'What is a baby elephant called?', answer: 'Calf', reward: "That's right!" },
+			{ question: 'What is a baby tiger called?', answer: 'Cub', reward: 'Spot on!' },
+			{ question: 'What is a baby rabbit called?', answer: 'Bunny', reward: 'Correct!' },
+			{ question: 'What is a baby owl called?', answer: 'Owlet', reward: 'You nailed it!' },
+			{ question: 'What is a baby eagle called?', answer: 'Eaglet', reward: 'Perfect answer!' },
+			{ question: 'What is a baby swan called?', answer: 'Cygnet', reward: 'Well played!' }
 		])
 		.onConflictDoUpdate({
 			target: questions.question,
 			set: {
-				answer: sql`excluded.answer`
+				answer: sql`excluded.answer`,
+				reward: sql`excluded.reward`
 			}
 		});
 

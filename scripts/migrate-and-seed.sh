@@ -8,8 +8,17 @@ if [ -z "$DATABASE_URL" ]; then
   exit 1
 fi
 
+echo "DATABASE_URL=${DATABASE_URL}"
+
 echo "Running database migrations..."
-if bun run db:migrate; then
+echo "Migration files available:"
+ls -la drizzle/*.sql 2>/dev/null || echo "No migration files found in drizzle/"
+
+# Database is already healthy due to depends_on condition, but add a small delay
+# to ensure network is fully established
+sleep 1
+
+if bun run db:migrate 2>&1; then
   echo "✓ Migrations completed successfully"
 else
   MIGRATE_EXIT=$?
